@@ -1,0 +1,5 @@
+# Default prospector config file.
+inherits:
+    - .prospector.base
+ignore-paths:
+  - lti/app.py

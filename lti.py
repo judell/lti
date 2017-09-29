@@ -101,15 +101,20 @@ submission_pox_template = """
 """ template for assignment submission form """
 submission_form_template = """
 <script>
-function make_submit_url() {
+function makeAndInvokeSubmitUrl() {
     var h_user = document.querySelector('#h_username').value.trim();
+    if ( h_user === '' ) {
+      alert('Please enter your Hypothesis username');
+      return;
+    }
     var submit_url = '/lti_submit?oauth_consumer_key=__OAUTH_CONSUMER_KEY__&lis_outcome_service_url=__LIS_OUTCOME_SERVICE_URL__&lis_result_sourcedid=__LIS_RESULT_SOURCEDID__';
     var export_url = '__LTI_SERVER__/lti_export?args=' + encodeURIComponent('uri=__DOC_URI__&user=' + h_user);
     console.log(export_url);
     console.log(encodeURIComponent(export_url));
     submit_url += '&export_url=' + encodeURIComponent(export_url);
-    return submit_url;
-}
+    location.href = submit_url;
+	}
+
 function clear_input() {
   var h_user = document.querySelector('#h_username');
   var check_element = document.getElementById('check_username');
@@ -130,7 +135,7 @@ function show_stream_link() {
 When you're done annotating:
 <div>1. Enter your Hypothesis username: <input onfocus="javascript:clear_input()" onchange="javascript:show_stream_link()" id="h_username"></div>
 <div>2. Check the name:  <span style="display:none" id="check_username"> <a target="stream" title="check your name" href=""> </a></span>
-<div>3. Click <input type="button" value="Submit Assignment" onclick="javascript:location.href=make_submit_url()"></div>
+<div>3. Click <input type="button" value="Submit Assignment" onclick="javascript:makeAndInvokeSubmitUrl()"></div>
 </p>
 
 

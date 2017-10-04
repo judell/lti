@@ -122,6 +122,7 @@ def pyramid_config(pyramid_request):
         'sqlalchemy.url': TEST_DATABASE_URL,
         'client_origin': 'http://TEST_H_SERVER.is',
         'via_url': 'http://TEST_VIA_SERVER.is',
+        'slack_hook': 'http://TEST_SLACK_SERVER.com',
     }
 
     with testing.testConfig(request=pyramid_request, settings=settings) as config:

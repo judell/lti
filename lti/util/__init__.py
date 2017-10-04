@@ -11,6 +11,7 @@ from pyramid.renderers import render
 from lti.util import pdf
 from lti.util import requests
 from lti.util import filecache
+from lti.util import notify
 
 
 def pack_state(data):
@@ -60,4 +61,5 @@ __all__ = (
     'simple_response',
     'requests',
     'filecache',
+    'notify',
 )

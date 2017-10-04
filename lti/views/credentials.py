@@ -6,8 +6,12 @@ import json
 
 from pyramid.view import view_config
 
+import logging
+
 from lti import util
 from lti.models import OAuth2UnvalidatedCredentials
+
+log = logging.getLogger(__name__)
 
 
 @view_config(route_name='lti_credentials',
@@ -29,12 +33,23 @@ def lti_credentials(request):
 
     credentials = json.loads(credentials)
 
+    email = credentials.get('email')
+    host = credentials.get('host')
+
     request.db.add(OAuth2UnvalidatedCredentials(
         client_id=credentials.get("key"),
         client_secret=credentials.get("secret"),
-        authorization_server=credentials.get("host"),
-        email_address=credentials.get("email"),
+        authorization_server=host,
+        email_address=email
     ))
+
+    message = ( 'new lti credentials from %s for %s' % (email, host) )
+
+    log.info(message)
+
+    slack_hook = request.registry.settings['slack_hook']
+
+    util.notify.notify_slack(slack_hook, message)
 
     return {
         'form_submitted': True,

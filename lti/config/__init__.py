@@ -33,6 +33,10 @@ def configure(settings=None):
         # The URL of the https://github.com/hypothesis/via instance to
         # integrate with.
         'via_url': env_setting('VIA_URL', required=True),
+
+        # The xxx part of https://hooks.slack.com/services/xxx,
+        # which is the webhook used to notify slack
+        'slack_hook': env_setting('SLACK_HOOK', required=True),
     }
 
     database_url = env_setting('DATABASE_URL')

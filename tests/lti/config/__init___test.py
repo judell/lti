@@ -29,6 +29,7 @@ class TestConfigure(object):
                 'DATABASE_URL': 'the_database_url',
                 'CLIENT_ORIGIN': 'the_client_origin',
                 'VIA_URL': 'the_via_url',
+                'SLACK_HOOK': 'the_slack_hook',
             }[envvar_name]
 
         env_setting.side_effect = env_setting_side_effect
@@ -40,6 +41,7 @@ class TestConfigure(object):
         assert config.registry.settings['sqlalchemy.url'] == 'the_database_url'
         assert config.registry.settings['client_origin'] == 'the_client_origin'
         assert config.registry.settings['via_url'] == 'the_via_url'
+        assert config.registry.settings['slack_hook'] == 'the_slack_hook'
 
     @pytest.fixture
     def env_setting(self, patch):

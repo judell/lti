@@ -22,7 +22,3 @@ class OAuth2Credentials(BASE):
     #: The OAuth 2.0 authorization server that these credentials came from.
     authorization_server = sa.Column(sa.UnicodeText, nullable=False)
 
-    #: A list of all the access tokens that we currently have from these
-    #: credentials.
-    access_tokens = relationship('OAuth2AccessToken',
-                                 cascade='all, delete, delete-orphan')

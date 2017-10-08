@@ -56,6 +56,7 @@ class OAuth2AccessToken(ModelFactory):
         model = models.OAuth2AccessToken
         sqlalchemy_session_persistence = 'flush'
 
-    credentials = factory.SubFactory(OAuth2Credentials)
+    authorization_server = 'TEST_AUTHORIZATION_SERVER'
+    user_id = factory.sequence(lambda n: 'TEST_USER_ID_' + str(n))
     access_token = factory.sequence(lambda n: 'TEST_ACCESS_TOKEN_' + str(n))
     refresh_token = factory.sequence(lambda n: 'TEST_REFRESH_TOKEN_' + str(n))

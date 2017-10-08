@@ -14,9 +14,12 @@ class OAuth2AccessToken(BASE):
     __tablename__ = 'oauth2_access_token'
 
     id = sa.Column(sa.Integer, autoincrement=True, primary_key=True)
-    client_id = sa.Column(sa.UnicodeText,
-                          sa.ForeignKey('oauth2_credentials.client_id'),
-                          nullable=False)
-    credentials = relationship('OAuth2Credentials', back_populates='access_tokens')
+
+    user_id = sa.Column(sa.UnicodeText, nullable=False)
+
+    client_id = sa.Column(sa.UnicodeText, 
+                sa.ForeignKey('oauth2_credentials.client_id'),
+                nullable=False)
+
     access_token = sa.Column(sa.UnicodeText, nullable=False)
     refresh_token = sa.Column(sa.UnicodeText, nullable=True)

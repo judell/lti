@@ -18,7 +18,7 @@ from lti.services import auth_data
 
 
 TEST_DATABASE_URL = os.environ.get(
-    'TEST_DATABASE_URL', 'postgresql://postgres@localhost:5433/lti_test')
+    'TEST_DATABASE_URL', 'postgresql://postgres@localhost:5432/lti_test')
 
 
 SESSION = sessionmaker()

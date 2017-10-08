@@ -14,6 +14,7 @@ EXT_CONTENT_RETURN_TYPES = 'ext_content_return_types'
 EXT_CONTENT_RETURN_URL = 'ext_content_return_url'
 LIS_OUTCOME_SERVICE_URL = 'lis_outcome_service_url'
 LIS_RESULT_SOURCEDID = 'lis_result_sourcedid'
+LTI_LAUNCH_URL = 'lti_launch_url'
 
 # Our params.
 EXPORT_URL = 'export_url'

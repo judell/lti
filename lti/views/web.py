@@ -7,7 +7,7 @@ from pyramid.renderers import render
 
 
 # pylint: disable=too-many-arguments, too-many-locals
-def web_response(request, oauth_consumer_key, lis_outcome_service_url,
+def web_response(request, user_id, oauth_consumer_key, lis_outcome_service_url,
                  lis_result_sourcedid, name, url):
     """
     Return an annotatable proxied copy of the given URL.

@@ -21,30 +21,6 @@ class TestOAuth2Credentials(object):
         assert persisted.client_secret == "TEST_SECRET"
         assert persisted.authorization_server == "TEST_AUTH_SERVER"
 
-    def test_the_access_tokens_are_available_as_the_access_tokens_property(self,
-                                                                           factories):
-        credentials = factories.OAuth2Credentials()
-        access_tokens = [
-            factories.OAuth2AccessToken(credentials=credentials),
-            factories.OAuth2AccessToken(credentials=credentials),
-            factories.OAuth2AccessToken(credentials=credentials),
-        ]
-
-        assert credentials.access_tokens == access_tokens
-
-    def test_you_cant_have_two_oauth2_credentials_with_the_same_id(self, db_session):
-        db_session.add(OAuth2Credentials(client_id="TEST_ID",
-                                         client_secret="FIRST_SECRET",
-                                         authorization_server="FIRST_AUTH_SERVER"))
-        db_session.add(OAuth2Credentials(client_id="TEST_ID",
-                                         client_secret="SECOND_SECRET",
-                                         authorization_server="SECOND_AUTH_SERVER"))
-
-        expected_message = ('duplicate key value violates unique constraint '
-                            '"pk__oauth2_credentials"')
-        with pytest.raises(IntegrityError, match=expected_message):
-            db_session.flush()
-
     def test_you_can_have_two_oauth2_credentials_with_the_same_server(self, db_session):
         # You can have two OAuth2Credential's for the same server in the db,
         # as long as they have different IDs. This might happen if two
@@ -107,18 +83,3 @@ class TestOAuth2Credentials(object):
         with pytest.raises(IntegrityError, match=expected_message):
             db_session.flush()
 
-    def test_deleting_an_OAuth2Credentials_deletes_all_its_OAuth2AccessTokens(self,
-                                                                              db_session,
-                                                                              factories):
-        credentials = factories.OAuth2Credentials()
-        db_session.add_all([
-            factories.OAuth2AccessToken(credentials=credentials),
-            factories.OAuth2AccessToken(credentials=credentials),
-            factories.OAuth2AccessToken(credentials=credentials),
-        ])
-        db_session.flush()
-
-        db_session.delete(credentials)
-        db_session.commit()
-
-        assert db_session.query(OAuth2AccessToken).all() == []

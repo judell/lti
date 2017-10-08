@@ -6,8 +6,7 @@ from __future__ import unicode_literals
 def includeme(config):
     config.add_route('about', '/')
 
-    config.add_route('token_callback', '/token_callback')
-    config.add_route('refresh_callback', '/refresh_callback')
+    config.add_route('oauth_callback', '/oauth_callback')
 
     config.add_route('config_xml', '/config.xml')
 

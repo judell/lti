@@ -9,7 +9,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from lti.models import OAuth2Credentials
 from lti.models import OAuth2AccessToken
 
-
+#logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 log = logging.getLogger(__name__)
 
 
@@ -42,33 +42,52 @@ class AuthDataService(object):
     def __init__(self, db):
         self._db = db
 
-    def set_tokens(self, oauth_consumer_key, lti_token, lti_refresh_token):
-        try:
-            credentials = self._credentials_for(oauth_consumer_key)
-        except KeyError:
-            # We raise AssertionError here just to maintain compatibility with
-            # the legacy API of auth_data, for now.
-            raise AssertionError
+    def set_tokens(self, user_id, oauth_consumer_key, lti_token, lti_refresh_token):
 
-        # Delete all existing access tokens for these credentials.
-        for access_token in credentials.access_tokens:
-            self._db.delete(access_token)
+        # Delete existing access/refresh token for this user
+        access_token = self._db.query(OAuth2AccessToken).filter_by(
+            user_id=user_id,
+            client_id=oauth_consumer_key).one()
+        self._db.delete(access_token)
+
+        print 'set tokens user %s, key %s, token %s, refresh %s' % (
+            user_id, oauth_consumer_key, lti_token, lti_refresh_token)
 
         # Save a new access and refresh token pair.
-        self._db.add(OAuth2AccessToken(
-            client_id=credentials.client_id,
-            access_token=lti_token,
-            refresh_token=lti_refresh_token,
-        ))
 
-    def get_lti_token(self, oauth_consumer_key):
-        access_token = self._first_access_token_for(oauth_consumer_key)
+        oauth2_access_token = (OAuth2AccessToken(
+                                  user_id=user_id,
+                                  client_id=oauth_consumer_key,
+                                  access_token=lti_token,
+                                  refresh_token=lti_refresh_token,
+                                  ))
+
+        self._db.add(oauth2_access_token)
+         
+
+    def get_lti_token(self, user_id, oauth_consumer_key):
+        print 'getting lti_token %s, %s' % (user_id, oauth_consumer_key)
+        try:
+            access_token = self._db.query(OAuth2AccessToken).filter_by(
+                user_id=user_id,
+                client_id=oauth_consumer_key).one()
+            print 'got lti_token for %s, %s: %s' % (user_id, oauth_consumer_key, access_token)
+        except NoResultFound:
+            print 'no lti_token for %s, %s' % (user_id, oauth_consumer_key)
+            raise KeyError
+
         if access_token is None:
             return None
         return access_token.access_token
 
-    def get_lti_refresh_token(self, oauth_consumer_key):
-        access_token = self._first_access_token_for(oauth_consumer_key)
+    def get_lti_refresh_token(self, user_id, oauth_consumer_key):
+        try:
+            access_token = self._db.query(OAuth2AccessToken).filter_by(
+                user_id=user_id,
+                client_id=oauth_consumer_key).one()
+        except NoResultFound:
+            raise KeyError
+
         if access_token is None:
             return None
         return access_token.refresh_token
@@ -81,20 +100,16 @@ class AuthDataService(object):
 
     def _credentials_for(self, oauth_consumer_key):
         try:
-            return self._db.query(OAuth2Credentials).filter_by(
+            print '_credentials_for %s' % oauth_consumer_key
+            ret = self._db.query(OAuth2Credentials).filter_by(
                 client_id=oauth_consumer_key).one()
+            print 'found %s' % ret.__dict__
+            return ret
         except NoResultFound:
+            print 'not found'
             # We raise KeyError here just to maintain compatibility with
             # the legacy API of auth_data, for now.
             raise KeyError
-
-    def _first_access_token_for(self, oauth_consumer_key):
-        credentials = self._credentials_for(oauth_consumer_key)
-
-        if not credentials.access_tokens:
-            return None
-
-        return credentials.access_tokens[0]
 
 
 def auth_data_service_factory(context, request):  # pylint: disable=unused-argument

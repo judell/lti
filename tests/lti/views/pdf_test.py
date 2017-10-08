@@ -20,6 +20,7 @@ class TestLTIPDF(object):
                                                   auth_data_svc):
         pdf.lti_pdf(
             pyramid_request,
+            user_id='TEST_USER_ID',
             oauth_consumer_key='TEST_OAUTH_CONSUMER_KEY',
             lis_outcome_service_url='TEST_LIS_OUTCOME_SERVICE_URL',
             lis_result_sourcedid='TEST_LIS_RESULT_SOURCEDID',
@@ -28,7 +29,7 @@ class TestLTIPDF(object):
             value='TEST_VALUE',
         )
 
-        auth_data_svc.get_lti_token.assert_called_once_with('TEST_OAUTH_CONSUMER_KEY')
+        auth_data_svc.get_lti_token.assert_called_once_with('TEST_USER_ID', 'TEST_OAUTH_CONSUMER_KEY')
 
     def test_it_shows_an_error_page_if_we_dont_have_the_consumer_key(self,
                                                                      pyramid_request,
@@ -38,6 +39,7 @@ class TestLTIPDF(object):
 
         response = pdf.lti_pdf(
             pyramid_request,
+            user_id='TEST_USER_ID',
             oauth_consumer_key='TEST_OAUTH_CONSUMER_KEY',
             lis_outcome_service_url='TEST_LIS_OUTCOME_SERVICE_URL',
             lis_result_sourcedid='TEST_LIS_RESULT_SOURCEDID',
@@ -47,7 +49,7 @@ class TestLTIPDF(object):
         )
 
         util.simple_response.assert_called_once_with(
-            "We don't have the Consumer Key TEST_OAUTH_CONSUMER_KEY in our database yet.")
+            "Authorization error")
         assert response == util.simple_response.return_value
 
     def test_it_gets_the_canvas_servers_url_from_the_db(self,
@@ -55,6 +57,7 @@ class TestLTIPDF(object):
                                                         auth_data_svc):
         pdf.lti_pdf(
             pyramid_request,
+            user_id='TEST_USER_ID',
             oauth_consumer_key='TEST_OAUTH_CONSUMER_KEY',
             lis_outcome_service_url='TEST_LIS_OUTCOME_SERVICE_URL',
             lis_result_sourcedid='TEST_LIS_RESULT_SOURCEDID',
@@ -70,6 +73,7 @@ class TestLTIPDF(object):
                                                    requests):
         pdf.lti_pdf(
             pyramid_request,
+            user_id='TEST_USER_ID',
             oauth_consumer_key='TEST_OAUTH_CONSUMER_KEY',
             lis_outcome_service_url='TEST_LIS_OUTCOME_SERVICE_URL',
             lis_result_sourcedid='TEST_LIS_RESULT_SOURCEDID',
@@ -98,6 +102,7 @@ class TestLTIPDF(object):
 
         response = pdf.lti_pdf(
             pyramid_request,
+            user_id='TEST_USER_ID',
             oauth_consumer_key='TEST_OAUTH_CONSUMER_KEY',
             lis_outcome_service_url='TEST_LIS_OUTCOME_SERVICE_URL',
             lis_result_sourcedid='TEST_LIS_RESULT_SOURCEDID',
@@ -125,6 +130,7 @@ class TestLTIPDF(object):
                                                     Response):
         response = pdf.lti_pdf(
             pyramid_request,
+            user_id='TEST_USER_ID',
             oauth_consumer_key='TEST_OAUTH_CONSUMER_KEY',
             lis_outcome_service_url='TEST_LIS_OUTCOME_SERVICE_URL',
             lis_result_sourcedid='TEST_LIS_RESULT_SOURCEDID',

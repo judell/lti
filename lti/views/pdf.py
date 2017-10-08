@@ -18,7 +18,7 @@ log = logging.getLogger(__name__)
 
 
 # pylint: disable = too-many-arguments, too-many-locals
-def lti_pdf(request, oauth_consumer_key, lis_outcome_service_url,
+def lti_pdf(request, user_id, oauth_consumer_key, lis_outcome_service_url,
             lis_result_sourcedid, course, name, value):
     """
     Return a PDF annotation assignment (HTML response).
@@ -36,9 +36,10 @@ def lti_pdf(request, oauth_consumer_key, lis_outcome_service_url,
     file_id = value
     auth_data_svc = request.find_service(name='auth_data')
     try:
-        lti_token = auth_data_svc.get_lti_token(oauth_consumer_key)
+        lti_token = auth_data_svc.get_lti_token(user_id, oauth_consumer_key)
     except KeyError:
-        return util.simple_response("We don't have the Consumer Key %s in our database yet." % oauth_consumer_key)
+        log.error ( 'no token for user %s, client_id %s' % (user_id, oauth_consumer_key) )
+        return util.simple_response("Authorization error")
     canvas_server = auth_data_svc.get_canvas_server(oauth_consumer_key)
     url = '%s/api/v1/courses/%s/files/%s' % (canvas_server, course, file_id)
 
@@ -51,6 +52,8 @@ def lti_pdf(request, oauth_consumer_key, lis_outcome_service_url,
     if response.status_code == 200:
         j = response.json()
         url = j['url']
+
+    log.info('lti_pdf: url %s' % url)
 
     return Response(
         render('lti:templates/pdf_assignment.html.jinja2', dict(

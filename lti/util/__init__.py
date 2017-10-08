@@ -13,6 +13,7 @@ from lti.util import requests
 
 def pack_state(data):
     """Return the given data dict as a URL-quoted JSON string."""
+    print 'pack_state %s' % pack_state
     return urllib.quote(json.dumps(data))
 
 

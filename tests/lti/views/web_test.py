@@ -18,6 +18,7 @@ class TestWebResponse(object):
 
         response = web.web_response(
             request=pyramid_request,
+            user_id='TEST_USER_ID',
             oauth_consumer_key='TEST_OAUTH_CONSUMER_KEY',
             lis_outcome_service_url='TEST_LIS_OUTCOME_SERVICE_URL',
             lis_result_sourcedid='TEST_LIS_RESULT_SOURCEDID',

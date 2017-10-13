@@ -33,6 +33,8 @@ def configure(settings=None):
         'via_url': env_setting('VIA_URL', required=True),
     }
 
+    print 'env_settings: %s' % env_settings
+
     database_url = env_setting('DATABASE_URL')
     if database_url:
         env_settings['sqlalchemy.url'] = database_url

@@ -1,5 +1,6 @@
 {# Template for assignment submission form #}
 <script>
+
 function receiveMessage(event) {
   if (event.origin !== "{{ client_origin }}") {
     return;

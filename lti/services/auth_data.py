@@ -44,14 +44,17 @@ class AuthDataService(object):
 
     def set_tokens(self, user_id, oauth_consumer_key, lti_token, lti_refresh_token):
 
-        # Delete existing access/refresh token for this user
-        access_token = self._db.query(OAuth2AccessToken).filter_by(
-            user_id=user_id,
-            client_id=oauth_consumer_key).one()
-        self._db.delete(access_token)
-
         print 'set tokens user %s, key %s, token %s, refresh %s' % (
             user_id, oauth_consumer_key, lti_token, lti_refresh_token)
+
+        # Delete existing access/refresh token for this user
+        try:
+            access_token = self._db.query(OAuth2AccessToken).filter_by(
+                user_id=user_id,
+                client_id=oauth_consumer_key).one()
+            self._db.delete(access_token)
+        except NoResultFound:
+            print 'set tokens: nothing to delete'
 
         # Save a new access and refresh token pair.
 

@@ -32,6 +32,7 @@ def lti_pdf(request, user_id, oauth_consumer_key, lis_outcome_service_url,
     later, after Canvas directs the browser back to us with an authorization.
 
     """
+
     post_data = util.requests.capture_post_data(request)
     file_id = value
     auth_data_svc = request.find_service(name='auth_data')
@@ -54,17 +55,20 @@ def lti_pdf(request, user_id, oauth_consumer_key, lis_outcome_service_url,
         url = j['url']
 
     log.info('lti_pdf: url %s' % url)
+    log.info('lti_pdf: lis_result_sourcedid %s' % lis_result_sourcedid )
+
+    log.info('lti_pdf: via_url %s' % request.registry.settings['via_url'] )
 
     return Response(
         render('lti:templates/pdf_assignment.html.jinja2', dict(
-               name=name,
-               pdf_url=url,
-               oauth_consumer_key=oauth_consumer_key,
-               lis_outcome_service_url=lis_outcome_service_url,
-               lis_result_sourcedid=lis_result_sourcedid,
-               lti_server=request.registry.settings['lti_server'],
-               client_origin=request.registry.settings['client_origin'],
-               via_url=request.registry.settings['via_url'],
-               )).encode('utf-8'),
+            name=name,
+            pdf_url=url,
+            oauth_consumer_key=oauth_consumer_key,
+            lis_outcome_service_url=lis_outcome_service_url,
+            lis_result_sourcedid=lis_result_sourcedid,
+            lti_server=request.registry.settings['lti_server'],
+            client_origin=request.registry.settings['client_origin'],
+            via_url=request.registry.settings['via_url'],
+            )).encode('utf-8'),
         content_type='text/html',
     )

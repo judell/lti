@@ -2,8 +2,13 @@
 
 from __future__ import unicode_literals
 
+import logging
+
 from pyramid.response import Response
 from pyramid.renderers import render
+
+
+log = logging.getLogger(__name__)
 
 
 # pylint: disable=too-many-arguments, too-many-locals
@@ -23,6 +28,10 @@ def web_response(request, user_id, oauth_consumer_key, lis_outcome_service_url,
     again.
 
     """
+
+    log.info('lti_web: sourcedid: %s' % lis_result_sourcedid)
+    log.info('lti_web: client_origin: %s' % request.registry.settings['client_origin'])
+
     html = render('lti:templates/html_assignment.html.jinja2', dict(
         name=name,
         url=request.registry.settings['via_url'] + '/' + url,
